@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>旅帳通 - 學生旅遊分帳小幫手</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-container">
+      <h1 class="app-title" id="appHeaderTitle">旅帳通</h1>
+      <p class="app-subtitle">學生旅遊分帳小幫手</p>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <!-- 視圖 1: 旅程列表與建立旅程 -->
+    <section id="viewTripList" class="view-section active">
+      <div class="card form-card">
+        <h2 class="card-title">建立新旅程</h2>
+        <form id="formCreateTrip" novalidate>
+          <div class="form-group">
+            <label for="inputTripName">旅程名稱 <span class="required">*</span></label>
+            <input type="text" id="inputTripName" name="tripName" placeholder="例如：台南兩天一夜" required maxlength="50">
+          </div>
+
+          <div class="form-group">
+            <label for="inputTripMembers">同行成員名單 <span class="required">*</span></label>
+            <input type="text" id="inputTripMembers" name="tripMembers" placeholder="請用逗號分隔，例如：小明, 小華, 小美" required>
+            <small class="form-hint">支援逗號（, 或 ，）與頓號（、）分隔，至少需 2 位成員</small>
+          </div>
+
+          <div class="form-group">
+            <label for="selectTripCurrency">幣別 <span class="required">*</span></label>
+            <select id="selectTripCurrency" name="tripCurrency">
+              <option value="TWD" selected>新台幣 (TWD - 元)</option>
+              <option value="JPY">日圓 (JPY - 円)</option>
+              <option value="KRW">韓元 (KRW - 韓元)</option>
+              <option value="USD">美元 (USD - 美元)</option>
+            </select>
+          </div>
+
+          <div id="tripFormError" class="form-error" aria-live="polite"></div>
+
+          <button type="submit" class="btn btn-primary btn-block" id="btnSubmitTrip">建立旅程</button>
+        </form>
+      </div>
+
+      <div class="card list-card">
+        <h2 class="card-title">我的旅程</h2>
+        <div id="tripListContainer" class="trip-list" aria-live="polite">
+          <!-- 旅程清單由 app.js 安全渲染 -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 視圖 2: 旅程詳情、新增支出、查看結算 -->
+    <section id="viewTripDetail" class="view-section" style="display: none;">
+      <div class="top-nav">
+        <button type="button" class="btn btn-secondary btn-sm" id="btnBackToTrips">← 回到旅程列表</button>
+      </div>
+
+      <!-- 旅程資訊摘要卡片 -->
+      <div class="card summary-card">
+        <div class="summary-header">
+          <h2 class="trip-detail-name" id="detailTripName"></h2>
+          <span class="badge" id="detailTripCurrencyBadge"></span>
+        </div>
+        <p class="detail-members-label">同行夥伴：<span id="detailTripMembers"></span></p>
+        <div class="total-expense-box">
+          <span class="total-label">旅程總花費</span>
+          <div class="total-amount-display">
+            <span class="total-number" id="detailTotalAmount">0</span>
+            <span class="total-unit" id="detailTotalCurrencyUnit">元</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 新增支出表單 -->
+      <div class="card form-card">
+        <h3 class="card-title">新增支出</h3>
+        <form id="formAddExpense" novalidate>
+          <div class="form-group">
+            <label for="inputExpenseTitle">消費項目 <span class="required">*</span></label>
+            <input type="text" id="inputExpenseTitle" name="expenseTitle" placeholder="例如：牛肉湯、租機車、民宿" required maxlength="50">
+          </div>
+
+          <div class="form-group">
+            <label for="inputExpenseAmount">整數金額 <span class="required">*</span></label>
+            <input type="number" id="inputExpenseAmount" name="expenseAmount" placeholder="請填寫正整數，例如：600" required min="1" step="1">
+          </div>
+
+          <div class="form-group">
+            <label for="inputExpenseDate">日期 <span class="required">*</span></label>
+            <input type="date" id="inputExpenseDate" name="expenseDate" required>
+          </div>
+
+          <div class="form-group">
+            <label for="selectExpensePayer">付款人（誰先墊付）<span class="required">*</span></label>
+            <select id="selectExpensePayer" name="expensePayer" required>
+              <!-- 動態載入旅程成員 -->
+            </select>
+          </div>
+
+          <div id="expenseFormError" class="form-error" aria-live="polite"></div>
+
+          <button type="submit" class="btn btn-primary btn-block" id="btnSubmitExpense">新增支出</button>
+        </form>
+      </div>
+
+      <!-- 結算功能區塊 -->
+      <div class="card settlement-card">
+        <div class="settlement-header">
+          <h3 class="card-title">分帳結算</h3>
+          <button type="button" class="btn btn-accent" id="btnViewSettlement">查看結算</button>
+        </div>
+        <div id="settlementResultContainer" class="settlement-content" style="display: none;" aria-live="polite">
+          <!-- 結算結果由 app.js 安全渲染 -->
+        </div>
+      </div>
+
+      <!-- 支出列表 -->
+      <div class="card list-card">
+        <h3 class="card-title">支出明細</h3>
+        <div id="expenseListContainer" class="expense-list" aria-live="polite">
+          <!-- 支出項目由 app.js 安全渲染 -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p>旅帳通 &copy; 學生旅遊分帳小幫手</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
