@@ -4,17 +4,17 @@
    ========================================================================== */
 
 :root {
-  --primary-color: #2563eb;
-  --primary-hover: #1d4ed8;
-  --primary-light: #eff6ff;
-  --accent-color: #059669;
-  --accent-hover: #047857;
-  --accent-light: #ecfdf5;
+  --primary-color: #ec4899;
+  --primary-hover: #db2777;
+  --primary-light: #fce7f3;
+  --accent-color: #f43f5e;
+  --accent-hover: #e11d48;
+  --accent-light: #ffe4e6;
   --text-main: #1f2937;
   --text-muted: #6b7280;
-  --border-color: #e5e7eb;
+  --border-color: #fbcfe8;
   --card-bg: #ffffff;
-  --page-bg: #f3f4f6;
+  --page-bg: #fdf2f8;
   --error-color: #dc2626;
   --error-bg: #fef2f2;
   --radius-sm: 6px;
@@ -194,7 +194,7 @@ select {
 input:focus,
 select:focus {
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.2);
 }
 
 .form-error {
@@ -278,7 +278,7 @@ select:focus {
 
 /* 旅程摘要卡 */
 .summary-card {
-  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+  background: linear-gradient(135deg, #db2777 0%, #f472b6 100%);
   color: #ffffff;
   border: none;
 }
@@ -526,19 +526,19 @@ select:focus {
   background-color: var(--accent-light);
   padding: 12px;
   border-radius: var(--radius-sm);
-  border: 1px solid #a7f3d0;
+  border: 1px solid #fecdd3;
 }
 
 .settlement-avg-title {
   font-size: 0.85rem;
-  color: #065f46;
+  color: #9f1239;
   margin-bottom: 4px;
 }
 
 .settlement-avg-value {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #047857;
+  color: #be123c;
 }
 
 .settlement-transfer-list {
