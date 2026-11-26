@@ -44,6 +44,9 @@ const CURRENCY_CONFIG = {
   USD: { name: '美元', unit: '美元' }
 };
 
+const EXPENSE_CATEGORIES = ['餐飲', '交通', '住宿', '購物', '門票', '其他'];
+const DEFAULT_CATEGORY = '其他';
+
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // ---------------------------------------------------------------------------
@@ -98,9 +101,11 @@ const dom = {
   inputExpenseTitle: document.getElementById('inputExpenseTitle'),
   inputExpenseAmount: document.getElementById('inputExpenseAmount'),
   inputExpenseDate: document.getElementById('inputExpenseDate'),
+  selectExpenseCategory: document.getElementById('selectExpenseCategory'),
   selectExpensePayer: document.getElementById('selectExpensePayer'),
   expenseFormError: document.getElementById('expenseFormError'),
   btnSubmitExpense: document.getElementById('btnSubmitExpense'),
+  categorySummaryContainer: document.getElementById('categorySummaryContainer'),
   expenseListContainer: document.getElementById('expenseListContainer'),
 
   // 結算區
@@ -129,6 +134,10 @@ function clearFormError(element) {
 
 function getCurrencyUnit(currencyCode) {
   return CURRENCY_CONFIG[currencyCode] ? CURRENCY_CONFIG[currencyCode].unit : '元';
+}
+
+function normalizeCategory(category) {
+  return EXPENSE_CATEGORIES.includes(category) ? category : DEFAULT_CATEGORY;
 }
 
 function getTimestampMillis(ts) {
@@ -430,6 +439,7 @@ function openTripDetail(tripId) {
   const today = new Date().toISOString().split('T')[0];
   dom.formAddExpense.reset();
   dom.inputExpenseDate.value = today;
+  dom.selectExpenseCategory.value = DEFAULT_CATEGORY;
   if (Array.isArray(trip.memberEmails) && trip.memberEmails.includes(state.currentUserEmail)) {
     dom.selectExpensePayer.value = state.currentUserEmail;
   }
@@ -483,6 +493,7 @@ async function handleAddExpense(event) {
   const title = dom.inputExpenseTitle.value.trim();
   const amountRaw = dom.inputExpenseAmount.value.trim();
   const date = dom.inputExpenseDate.value;
+  const category = normalizeCategory(dom.selectExpenseCategory.value);
   const payer = dom.selectExpensePayer.value;
   const members = Array.isArray(trip.memberEmails) ? trip.memberEmails : [];
 
@@ -518,6 +529,7 @@ async function handleAddExpense(event) {
       title,
       amount,
       date,
+      category,
       payer,
       createdBy: state.currentUserEmail,
       createdAt: serverTimestamp()
@@ -525,6 +537,7 @@ async function handleAddExpense(event) {
 
     dom.inputExpenseTitle.value = '';
     dom.inputExpenseAmount.value = '';
+    dom.selectExpenseCategory.value = DEFAULT_CATEGORY;
     dom.inputExpenseTitle.focus();
   } catch (error) {
     console.error('新增支出失敗:', error);
@@ -532,6 +545,53 @@ async function handleAddExpense(event) {
   } finally {
     dom.btnSubmitExpense.disabled = false;
   }
+}
+
+function renderCategorySummary(unit) {
+  clearElement(dom.categorySummaryContainer);
+
+  if (state.expenses.length === 0) {
+    dom.categorySummaryContainer.style.display = 'none';
+    return;
+  }
+
+  const categoryTotals = {};
+  EXPENSE_CATEGORIES.forEach((cat) => {
+    categoryTotals[cat] = 0;
+  });
+
+  state.expenses.forEach((exp) => {
+    const cat = normalizeCategory(exp.category);
+    categoryTotals[cat] += Number(exp.amount) || 0;
+  });
+
+  const titleEl = document.createElement('div');
+  titleEl.className = 'category-summary-title';
+  titleEl.textContent = '各分類小計';
+
+  const gridEl = document.createElement('div');
+  gridEl.className = 'category-summary-grid';
+
+  EXPENSE_CATEGORIES.forEach((cat) => {
+    const itemEl = document.createElement('div');
+    itemEl.className = 'category-summary-item';
+
+    const nameEl = document.createElement('span');
+    nameEl.className = 'category-summary-name';
+    nameEl.textContent = cat;
+
+    const amountEl = document.createElement('span');
+    amountEl.className = 'category-summary-amount';
+    amountEl.textContent = `${categoryTotals[cat].toLocaleString('zh-TW')} ${unit}`;
+
+    itemEl.appendChild(nameEl);
+    itemEl.appendChild(amountEl);
+    gridEl.appendChild(itemEl);
+  });
+
+  dom.categorySummaryContainer.appendChild(titleEl);
+  dom.categorySummaryContainer.appendChild(gridEl);
+  dom.categorySummaryContainer.style.display = 'block';
 }
 
 function renderExpensesAndTotal() {
@@ -542,6 +602,7 @@ function renderExpensesAndTotal() {
   const totalAmount = state.expenses.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
   dom.detailTotalAmount.textContent = totalAmount.toLocaleString('zh-TW');
 
+  renderCategorySummary(unit);
   clearElement(dom.expenseListContainer);
 
   if (state.expenses.length === 0) {
@@ -565,7 +626,16 @@ function renderExpensesAndTotal() {
 
     const metaEl = document.createElement('div');
     metaEl.className = 'expense-item-meta';
-    metaEl.textContent = `日期：${exp.date}`;
+
+    const categoryBadge = document.createElement('span');
+    categoryBadge.className = 'category-badge';
+    categoryBadge.textContent = normalizeCategory(exp.category);
+
+    const dateText = document.createElement('span');
+    dateText.textContent = `日期：${exp.date}`;
+
+    metaEl.appendChild(categoryBadge);
+    metaEl.appendChild(dateText);
 
     infoDiv.appendChild(titleEl);
     infoDiv.appendChild(metaEl);

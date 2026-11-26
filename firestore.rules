@@ -36,7 +36,9 @@ service cloud.firestore {
           && request.resource.data.amount is int
           && request.resource.data.amount > 0
           && request.resource.data.date is string
-          && request.resource.data.payer is string;
+          && request.resource.data.payer is string
+          && (!('category' in request.resource.data)
+            || request.resource.data.category in ['餐飲', '交通', '住宿', '購物', '門票', '其他']);
 
         allow delete: if isTripMember();
       }

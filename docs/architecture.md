@@ -36,6 +36,7 @@
 | `title` | `string` | 消費項目 |
 | `amount` | `number` | 正整數金額 |
 | `date` | `string` | 消費日期（`YYYY-MM-DD`） |
+| `category` | `string` | 支出分類（`餐飲`、`交通`、`住宿`、`購物`、`門票`、`其他`，預設為 `其他`；舊資料若無此欄位一律視為 `其他`） |
 | `payer` | `string` | 付款人 Gmail |
 | `createdBy` | `string` | 記錄者 Gmail |
 | `createdAt` | `Timestamp` | 伺服器建立時間 |

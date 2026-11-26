@@ -113,6 +113,18 @@
           </div>
 
           <div class="form-group">
+            <label for="selectExpenseCategory">分類 <span class="required">*</span></label>
+            <select id="selectExpenseCategory" name="expenseCategory" required>
+              <option value="餐飲">餐飲</option>
+              <option value="交通">交通</option>
+              <option value="住宿">住宿</option>
+              <option value="購物">購物</option>
+              <option value="門票">門票</option>
+              <option value="其他" selected>其他</option>
+            </select>
+          </div>
+
+          <div class="form-group">
             <label for="selectExpensePayer">付款人（誰先墊付）<span class="required">*</span></label>
             <select id="selectExpensePayer" name="expensePayer" required>
               <!-- 動態載入旅程成員 Gmail -->
@@ -139,6 +151,9 @@
       <!-- 支出列表 -->
       <div class="card list-card">
         <h3 class="card-title">支出明細</h3>
+        <div id="categorySummaryContainer" class="category-summary-box" style="display: none;" aria-live="polite">
+          <!-- 各分類小計由 app.js 安全渲染 -->
+        </div>
         <div id="expenseListContainer" class="expense-list" aria-live="polite">
           <!-- 支出項目由 app.js 安全渲染 -->
         </div>
