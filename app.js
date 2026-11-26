@@ -14,8 +14,8 @@
   // 常數與設定
   // ---------------------------------------------------------------------------
   const STORAGE_KEYS = {
-    TRIPS: 'travel_split_trips',
-    EXPENSES: 'travel_split_expenses'
+    TRIPS: 'trip_trips',
+    EXPENSES: 'trip_expenses'
   };
 
   const CURRENCY_CONFIG = {
@@ -211,12 +211,10 @@
     state.trips.unshift(newTrip);
     saveTripsToStorage();
 
-    // 重設表單
+    // 重設表單並停留於首頁顯示新建立的旅程卡片
     dom.formCreateTrip.reset();
     renderTripList();
-
-    // 自動導向新旅程詳情
-    openTripDetail(newTrip.id);
+    dom.tripListContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
   function renderTripList() {
