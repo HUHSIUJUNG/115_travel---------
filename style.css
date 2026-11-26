@@ -46,8 +46,7 @@ body {
 .app-header {
   background-color: var(--primary-color);
   color: #ffffff;
-  padding: 16px;
-  text-align: center;
+  padding: 14px 16px;
   box-shadow: var(--shadow-sm);
   position: sticky;
   top: 0;
@@ -57,18 +56,71 @@ body {
 .header-container {
   max-width: 600px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-brand {
+  text-align: center;
 }
 
 .app-title {
   font-size: 1.35rem;
   font-weight: 700;
   letter-spacing: 0.5px;
+  cursor: pointer;
 }
 
 .app-subtitle {
   font-size: 0.85rem;
   opacity: 0.9;
   margin-top: 2px;
+}
+
+.user-status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.user-email-pill {
+  font-size: 0.8rem;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 4px 10px;
+  border-radius: 9999px;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.btn-logout {
+  background-color: rgba(255, 255, 255, 0.92);
+  color: var(--primary-color);
+  min-height: 32px;
+  padding: 4px 10px;
+  font-size: 0.8rem;
+}
+
+.btn-logout:hover {
+  background-color: #ffffff;
+}
+
+/* 登入引導卡片 */
+.auth-card {
+  text-align: center;
+  padding: 28px 20px;
+}
+
+.auth-desc {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin-bottom: 18px;
+  line-height: 1.6;
 }
 
 /* 主體內容容器 */

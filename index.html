@@ -9,14 +9,30 @@
 <body>
   <header class="app-header">
     <div class="header-container">
-      <h1 class="app-title" id="appHeaderTitle">旅帳通</h1>
-      <p class="app-subtitle">學生旅遊分帳小幫手</p>
+      <div class="header-brand">
+        <h1 class="app-title" id="appHeaderTitle">旅帳通</h1>
+        <p class="app-subtitle">學生旅遊分帳小幫手</p>
+      </div>
+      <div id="userStatusBar" class="user-status-bar" style="display: none;">
+        <span id="userEmailDisplay" class="user-email-pill"></span>
+        <button type="button" id="btnLogout" class="btn btn-sm btn-logout">登出</button>
+      </div>
     </div>
   </header>
 
   <main class="main-content">
+    <!-- 視圖 0: Google 登入引導 -->
+    <section id="viewAuth" class="view-section">
+      <div class="card auth-card">
+        <h2 class="card-title">歡迎使用旅帳通</h2>
+        <p class="auth-desc">請使用 Google 帳號登入，即可與同行旅伴在雲端同步記錄每一筆共同支出並自動結算。</p>
+        <div id="authError" class="form-error" aria-live="polite"></div>
+        <button type="button" id="btnGoogleLogin" class="btn btn-primary btn-block btn-google">使用 Google 帳號登入</button>
+      </div>
+    </section>
+
     <!-- 視圖 1: 旅程列表與建立旅程 -->
-    <section id="viewTripList" class="view-section active">
+    <section id="viewTripList" class="view-section" style="display: none;">
       <div class="card form-card">
         <h2 class="card-title">建立新旅程</h2>
         <form id="formCreateTrip" novalidate>
@@ -26,9 +42,9 @@
           </div>
 
           <div class="form-group">
-            <label for="inputTripMembers">同行成員名單 <span class="required">*</span></label>
-            <input type="text" id="inputTripMembers" name="tripMembers" placeholder="請用逗號分隔，例如：小明, 小華, 小美" required>
-            <small class="form-hint">支援逗號（, 或 ，）與頓號（、）分隔，至少需 2 位成員</small>
+            <label for="inputTripMembers">同行成員 Gmail <span class="required">*</span></label>
+            <input type="text" id="inputTripMembers" name="tripMembers" placeholder="例如：ming@gmail.com, hua@gmail.com" required>
+            <small class="form-hint">請輸入成員的 Gmail（支援逗號或頓號分隔），系統會自動包含您目前的帳號，且至少需 2 位不同成員</small>
           </div>
 
           <div class="form-group">
@@ -99,7 +115,7 @@
           <div class="form-group">
             <label for="selectExpensePayer">付款人（誰先墊付）<span class="required">*</span></label>
             <select id="selectExpensePayer" name="expensePayer" required>
-              <!-- 動態載入旅程成員 -->
+              <!-- 動態載入旅程成員 Gmail -->
             </select>
           </div>
 
@@ -134,6 +150,6 @@
     <p>旅帳通 &copy; 學生旅遊分帳小幫手</p>
   </footer>
 
-  <script src="app.js"></script>
+  <script type="module" src="app.js"></script>
 </body>
 </html>
